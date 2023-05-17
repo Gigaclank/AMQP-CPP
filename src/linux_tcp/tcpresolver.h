@@ -6,6 +6,7 @@
  *
  *  @author Emiel Bruijntjes <emiel.bruijntjes@copernica.com>
  *  @copyright 2015 - 2020 Copernica BV
+ *  @copyright 2023 Cynalytica International
  */
 
 /**
@@ -42,6 +43,12 @@ private:
      *  @var std::string
      */
     std::string _hostname;
+
+    /**
+     *  The interface that we're trying to resolve with
+     *  @var std::string
+     */
+    std::string _interface;
     
     /**
      *  Should we be using a secure connection?
@@ -123,7 +130,11 @@ private:
                 
                 // we set the 'keepalive' option so that we automatically detect if the peer is dead
                 int keepalive = 1;
-                
+                //Optionally set the interface that we use to figure it all out.
+                if(!_interface.empty()){
+                    setsockopt(_socket, SOL_SOCKET, SO_BINDTODEVICE, _interface.c_str(), _interface.length());
+                }
+
                 // set the keepalive option
                 setsockopt(_socket, SOL_SOCKET, SO_KEEPALIVE, &keepalive, sizeof(keepalive));
 
@@ -206,17 +217,19 @@ public:
      *  Constructor
      *  @param  parent      Parent connection object
      *  @param  hostname    The hostname for the lookup
+     *  @param  interface   The interface name to use for the lookup
      *  @param  portnumber  The portnumber for the lookup
      *  @param  secure      Do we need a secure tls connection when ready?
      *  @param  timeout     timeout per connection attempt
      *  @param  order       How should we oreder the addresses of the host to connect to
      */
-    TcpResolver(TcpParent *parent, std::string hostname, uint16_t port, bool secure, int timeout, const ConnectionOrder &order) : 
+    TcpResolver(TcpParent *parent, std::string hostname,std::string interface, uint16_t port, bool secure, int timeout, const ConnectionOrder &order) :
         TcpExtState(parent), 
         _hostname(std::move(hostname)),
         _secure(secure),
         _port(port),
         _timeout(timeout),
+        _interface(std::move(interface)),
         _order(order)
     {
         // tell the event loop to monitor the filedescriptor of the pipe
@@ -228,6 +241,8 @@ public:
         // store thread in member
         _thread.swap(thread);
     }
+
+
     
     /**
      *  Destructor

@@ -5,6 +5,7 @@
  *
  *  @author Emiel Bruijntjes <emiel.bruijntjes@copernica.com>
  *  @copyright 2015 - 2018 Copernica BV
+ *  @copyright 2023 Cynalytica International
  */
  
 /**
@@ -61,6 +62,11 @@ private:
      */
     std::string _hostname;
 
+    /**
+     *  The interface
+     *  @var std::string
+     */
+    std::string _interface;
     /**
      *  Port number
      *  @var uint16_t
@@ -210,10 +216,11 @@ public:
      *  @param  vhost
      *  @param  secure
      */
-    Address(std::string host, uint16_t port, Login login, std::string vhost, bool secure = false) :
+    Address(std::string host, uint16_t port, Login login, std::string vhost,std::string interface, bool secure = false) :
         _secure(secure),
         _login(std::move(login)),
         _hostname(std::move(host)),
+        _interface(std::move(interface)),
         _port(port),
         _vhost(std::move(vhost)) {}
 
@@ -247,6 +254,15 @@ public:
     const std::string &hostname() const
     {
         return _hostname;
+    }
+
+    /**
+    *  Interface name
+    *  @return std::string
+    */
+    const std::string &interface() const
+    {
+        return _interface;
     }
 
     /**
