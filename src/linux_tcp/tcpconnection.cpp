@@ -5,6 +5,7 @@
  *
  *  @author Emiel Bruijntjes <emiel.bruijntjes@copernica.com>
  *  @copyright 2015 - 2020 Copernica BV
+ *  @copyright 2023 Cynalytica International
  */
 
 /**
@@ -26,7 +27,7 @@ namespace AMQP {
  */
 TcpConnection::TcpConnection(TcpHandler *handler, const Address &address) :
     _handler(handler),
-    _state(new TcpResolver(this, address.hostname(), address.port(), address.secure(), address.option("connectTimeout", 5), ConnectionOrder(address.option("connectionOrder")))),
+    _state(new TcpResolver(this, address.hostname(), address.interface(),address.port(), address.secure(), address.option("connectTimeout", 5), ConnectionOrder(address.option("connectionOrder")))),
     _connection(this, address.login(), address.vhost()) 
 {
     // tell the handler
