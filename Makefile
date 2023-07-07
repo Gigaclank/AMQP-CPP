@@ -2,8 +2,10 @@ PREFIX                  ?= /usr
 INCLUDE_DIR             = ${PREFIX}/include
 LIBRARY_DIR             = ${PREFIX}/lib
 export LIBRARY_NAME		= amqpcpp
-export SONAME			= 4.3
-export VERSION			= 4.3.26
+
+export SONAME			= 5.1
+export VERSION			= 5.1.0
+
 
 all:
 		$(MAKE) VERSION=${VERSION} -C src all
